@@ -102,9 +102,7 @@ fidelity_algorithm = ComputeUncompute(sampler=sampler)
 fidelity_kernel = FidelityQuantumKernel(feature_map=feature_map, fidelity=fidelity_algorithm)
 
 # Compute quantum kernel matrices
-print("Menghitung matriks kernel kuantum untuk data latih...")
 kernel_matrix_train = fidelity_kernel.evaluate(x_vec=X_train)
-print("Menghitung matriks kernel kuantum untuk data uji...")
 kernel_matrix_test = fidelity_kernel.evaluate(x_vec=X_test, y_vec=X_train)
 ```
 
