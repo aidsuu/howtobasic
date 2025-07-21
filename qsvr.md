@@ -26,4 +26,25 @@ To install the necessary libraries, run:
 
 ```bash
 pip install pandas numpy scikit-learn matplotlib qiskit qiskit-machine-learning
+```
 
+## Setting up the Environment
+Start by importing the necessary libraries
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+import time
+
+from sklearn.svm import SVR
+from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
+
+from qiskit.circuit.library import ZZFeatureMap
+from qiskit.primitives import Sampler
+from qiskit_algorithms.state_fidelities import ComputeUncompute
+from qiskit_machine_learning.kernels import FidelityQuantumKernel
+```
