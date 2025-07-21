@@ -146,6 +146,7 @@ svr_quantum.fit(kernel_matrix_train, y_train)
 y_pred_scaled_q = svr_quantum.predict(kernel_matrix_test)
 y_pred_quantum = scaler_y.inverse_transform(y_pred_scaled_q.reshape(-1, 1)).ravel()
 rmse_quantum = np.sqrt(mean_squared_error(y_test_original, y_pred_quantum))
+print(f"RMSE for quantum SVR: {rmse_quantum:.4f} mm")
 
 # Plotting the results
 plt.figure(figsize=(15, 8))
