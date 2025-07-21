@@ -48,3 +48,34 @@ from qiskit.primitives import Sampler
 from qiskit_algorithms.state_fidelities import ComputeUncompute
 from qiskit_machine_learning.kernels import FidelityQuantumKernel
 ```
+## Loading and Preprocessing Data
+For this tutorial, we will use weather data (rainfall data). Here’s how to load and preprocess the data:
+```python
+# Input Data    
+NAMA_FILE = 'datacurahhujan.xlsx'
+df = pd.read_excel(NAMA_FILE, skiprows=6)
+
+df = df.rename(columns={'Unnamed: 0': 'Tanggal', 'Unnamed: 1': 'RR'})[['Tanggal', 'RR']]
+df['Tanggal'] = pd.to_datetime(df['Tanggal'], format='%d-%m-%Y', dayfirst=True, errors='coerce')
+df['RR'] = pd.to_numeric(df['RR'], errors='coerce')
+df.dropna(subset=['Tanggal'], inplace=True)
+df['RR'] = df['RR'].replace(8888.0, np.nan).interpolate(method='linear').fillna(0)
+
+# Lag features and month feature
+n_lags = 3
+features_list = [f'lag_{i}' for i in range(1, n_lags + 1)] + ['month']
+for i in range(1, n_lags + 1):
+    df[f'lag_{i}'] = df['RR'].shift(i)
+df['month'] = df['Tanggal'].dt.month
+df_model = df.dropna().copy()
+
+# Feature and target variable
+X = df_model[features_list]
+y = df_model['RR']
+
+# Standardization
+scaler_X = StandardScaler()
+X_scaled = scaler_X.fit_transform(X)
+scaler_y = StandardScaler()
+y_scaled = scaler_y.fit_transform(y.values.reshape(-1, 1)).ravel()
+```
