@@ -139,3 +139,5 @@ In this tutorial, we have demonstrated how to use classical SVR and transform it
 
 ## References
 [Qiskit](https://quantum.cloud.ibm.com/docs/en)
+[Scikit-learn](https://scikit-learn.org/stable/)
+[Pandas](https://pandas.pydata.org/docs/user_guide/index.html)
