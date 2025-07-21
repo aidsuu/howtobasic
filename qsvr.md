@@ -79,3 +79,59 @@ X_scaled = scaler_X.fit_transform(X)
 scaler_y = StandardScaler()
 y_scaled = scaler_y.fit_transform(y.values.reshape(-1, 1)).ravel()
 ```
+
+## Building and Tuning the SVR Model
+In this step, we build and tune the classical SVR model using GridSearchCV:
+```python
+param_grid = {'C': [1, 10, 100], 'gamma': ['scale', 'auto', 0.01], 'epsilon': [0.01, 0.1]}
+svr = SVR(kernel='rbf')
+tscv = TimeSeriesSplit(n_splits=5)
+grid_search = GridSearchCV(svr, param_grid, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=0)
+grid_search.fit(X_train, y_train)
+best_params_classical = grid_search.best_params_
+```
+
+## Quantum Kernel and QSVR
+Here we create the quantum kernel using Qiskit and use it for QSVR:
+```python
+# Quantum Kernel Setup
+num_features = len(features_list)
+feature_map = ZZFeatureMap(feature_dimension=num_features, reps=2, entanglement='linear')
+sampler = Sampler()
+fidelity_algorithm = ComputeUncompute(sampler=sampler)
+fidelity_kernel = FidelityQuantumKernel(feature_map=feature_map, fidelity=fidelity_algorithm)
+
+# Compute quantum kernel matrices
+print("Menghitung matriks kernel kuantum untuk data latih...")
+kernel_matrix_train = fidelity_kernel.evaluate(x_vec=X_train)
+print("Menghitung matriks kernel kuantum untuk data uji...")
+kernel_matrix_test = fidelity_kernel.evaluate(x_vec=X_test, y_vec=X_train)
+```
+
+## Model Evaluation and Comparison
+We will now compare the classical and quantum models by plotting the predictions and calculating the RMSE:
+```python
+# Classical SVR
+svr_model = grid_search.best_estimator_
+y_pred_scaled = svr_model.predict(X_test)
+y_pred_classical = scaler_y.inverse_transform(y_pred_scaled.reshape(-1, 1)).ravel()
+rmse_classical = np.sqrt(mean_squared_error(y_test_original, y_pred_classical))
+
+# QSVR Model
+svr_quantum = SVR(kernel='precomputed', C=C_best, epsilon=epsilon_best)
+svr_quantum.fit(kernel_matrix_train, y_train)
+
+y_pred_scaled_q = svr_quantum.predict(kernel_matrix_test)
+y_pred_quantum = scaler_y.inverse_transform(y_pred_scaled_q.reshape(-1, 1)).ravel()
+rmse_quantum = np.sqrt(mean_squared_error(y_test_original, y_pred_quantum))
+
+# Plotting the results
+plt.figure(figsize=(15, 8))
+plt.plot(test_dates, y_test_original, label='Data Aktual', marker='o', linestyle='-', color='black', linewidth=2)
+plt.plot(test_dates, y_pred_classical, label=f'SVR Klasik (RMSE: {rmse_classical:.2f})', linestyle='--', color='red')
+plt.plot(test_dates, y_pred_quantum, label=f'QSVR (RMSE: {rmse_quantum:.2f})', linestyle='-.', color='green', linewidth=2.5)
+plt.title('Perbandingan Prediksi: SVR Klasik vs. Quantum Kernel SVR', fontsize=18)
+plt.xlabel('Tanggal', fontsize=14); plt.ylabel('Curah Hujan (mm)', fontsize=14)
+plt.legend(fontsize=12); plt.grid(True); plt.xticks(rotation=45); plt.tight_layout()
+plt.show()
+```
