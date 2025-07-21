@@ -98,7 +98,7 @@ In this step, we build and tune the classical SVR model using GridSearchCV:
 ```python
 # GridSearch for best parameters for SVR
 param_grid = {'C': [1, 10, 100], 'gamma': ['scale', 'auto', 0.01], 'epsilon': [0.01, 0.1]}
-svr = SVR(kernel='rbf')
+svr = SVR(kernel='rbf') # Create SVR model with radial basis function (RBF) kernel
 tscv = TimeSeriesSplit(n_splits=5)
 grid_search = GridSearchCV(svr, param_grid, cv=tscv, scoring='neg_mean_squared_error', n_jobs=-1, verbose=0)
 grid_search.fit(X_train, y_train)
@@ -119,7 +119,7 @@ Here we create the quantum kernel using Qiskit and use it for QSVR:
 ```python
 # Quantum Kernel Setup
 num_features = len(features_list) 
-feature_map = ZZFeatureMap(feature_dimension=num_features, reps=2, entanglement='linear')  # Create quantum feature map
+feature_map = ZZFeatureMap(feature_dimension=num_features, reps=2, entanglement='linear')  # Create quantum feature map with 2 repetitions and linear engtanglement
 sampler = Sampler()
 fidelity_algorithm = ComputeUncompute(sampler=sampler)
 fidelity_kernel = FidelityQuantumKernel(feature_map=feature_map, fidelity=fidelity_algorithm)
