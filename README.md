@@ -1,2 +1,3 @@
 # howtobasic 🤓
-1. [QML](QML/qsvr.md)
+1. Quantum Machine Learning
+   [QSVR](QML/qsvr.md)
