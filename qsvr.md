@@ -133,3 +133,9 @@ plt.xlabel('Tanggal', fontsize=14); plt.ylabel('Curah Hujan (mm)', fontsize=14)
 plt.legend(fontsize=12); plt.grid(True); plt.xticks(rotation=45); plt.tight_layout()
 plt.show()
 ```
+
+## Conclusion
+In this tutorial, we have demonstrated how to use classical SVR and transform it into QSVR using quantum kernels. We have compared the results of the classical and quantum models based on RMSE and visualized the predictions.
+
+## References
+Qiskit [https://quantum.cloud.ibm.com/docs/en]
