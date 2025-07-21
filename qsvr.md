@@ -138,6 +138,6 @@ plt.show()
 In this tutorial, we have demonstrated how to use classical SVR and transform it into QSVR using quantum kernels. We have compared the results of the classical and quantum models based on RMSE and visualized the predictions.
 
 ## References
-[Qiskit](https://quantum.cloud.ibm.com/docs/en)
-[Scikit-learn](https://scikit-learn.org/stable/)
+[Qiskit](https://quantum.cloud.ibm.com/docs/en) \\
+[Scikit-learn](https://scikit-learn.org/stable/) \\
 [Pandas](https://pandas.pydata.org/docs/user_guide/index.html)
