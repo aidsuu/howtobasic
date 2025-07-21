@@ -1,2 +1,2 @@
 # howtobasic 🤓
-1. [QML]
+1. [QML](QML/qsvr.md)
