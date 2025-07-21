@@ -64,8 +64,8 @@ df.dropna(subset=['Tanggal'], inplace=True)
 df['RR'] = df['RR'].replace(8888.0, np.nan).interpolate(method='linear').fillna(0) # Replace invalid values and interpolate missing data
 
 # Add lag features for previous day's rainfall (e.g., lag_1, lag_2, lag_3) and month
-n_lags = 3
-features_list = [f'lag_{i}' for i in range(1, n_lags + 1)] + ['month']
+n_lags = 3 
+features_list = [f'lag_{i}' for i in range(1, n_lags + 1)] + ['month'] # where these 4 lags will become qubits in QSVR
 for i in range(1, n_lags + 1):
     df[f'lag_{i}'] = df['RR'].shift(i)
 df['month'] = df['Tanggal'].dt.month
