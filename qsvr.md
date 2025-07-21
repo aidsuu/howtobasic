@@ -1,4 +1,4 @@
-# Converting SVR Data to QSVR: A Step-by-Step Guide
+# Converting SVR Data to QSVR: A Step-by-Step Guide 🤓
 
 In this tutorial, we will walk through the process of transforming data from classical Support Vector Regression (SVR) into Quantum Support Vector Regression (QSVR) using Qiskit. We'll start with the necessary setup, load the data, apply classical SVR, and finally transition to QSVR to compare the results.
 
@@ -138,4 +138,4 @@ plt.show()
 In this tutorial, we have demonstrated how to use classical SVR and transform it into QSVR using quantum kernels. We have compared the results of the classical and quantum models based on RMSE and visualized the predictions.
 
 ## References
-[Qiskit] (https://quantum.cloud.ibm.com/docs/en)
+[Qiskit](https://quantum.cloud.ibm.com/docs/en)
