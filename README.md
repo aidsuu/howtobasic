@@ -1,3 +1,4 @@
 # howtobasic 🤓
-1. Quantum Machine Learning
-   [QSVR](QML/qsvr.md)
+## Quantum Machine Learning
+
+1. [Quantum Support Vector Regression](QML/qsvr.md)
