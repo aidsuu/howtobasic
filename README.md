@@ -47,7 +47,72 @@ Pre-generated sample visualizations are available in `data/samples/`:
 - `orbital_n3_l2_m1.html` and `.json`
 - `orbital_n10_l3_m1.html` and `.json`
 
-### 2. **QML - Quantum Machine Learning** (`QML/`)
+### 2. **Quantum Tunneling 1D** (`quantum_tunneling_1d/`)
+A Python implementation of 1D quantum tunneling phenomenon where a Gaussian wavepacket collides with a square potential barrier.
+
+#### Physical Model
+This project simulates quantum tunneling based on the **Time-Dependent Schrödinger Equation**:
+
+$$i\hbar\frac{\partial\psi(x,t)}{\partial t} = \left[-\frac{\hbar^2}{2m}\frac{\partial^2}{\partial x^2} + V(x)\right]\psi(x,t)$$
+
+For a **square barrier potential**:
+
+$$V(x) = \begin{cases}
+0 & \text{if } x < a \\
+V_0 & \text{if } a \leq x \leq b \\
+0 & \text{if } x > b
+\end{cases}$$
+
+#### Initial Wavepacket
+The simulation starts with a **Gaussian wavepacket** with initial momentum:
+
+$$\psi(x,0) = \exp\left[-\frac{(x-x_0)^2}{4\sigma^2}\right]\exp(ik_0x)$$
+
+#### Energy and Transmission
+- **Central Energy**: $E_0 = \frac{\hbar^2 k_0^2}{2m}$
+- **For sub-barrier tunneling** ($E_0 < V_0$), the decay factor is: $\kappa = \frac{\sqrt{2m(V_0 - E_0)}}{\hbar}$
+- **Approximate transmission coefficient** for sufficiently thick barrier: $T \approx e^{-2\kappa L}$, where $L = b - a$
+
+#### Quick Start
+```bash
+cd quantum_tunneling_1d
+pip install -r requirements.txt
+python main.py --V0 1.5 --k0 1.2 --width 10.0 --steps 5000
+python main.py --V0 1.5 --k0 1.2 --width 10.0 --steps 5000 --animate
+```
+
+#### Command-line Arguments
+- `--V0`: Barrier height (default: 1.5)
+- `--k0`: Initial wave number (default: 1.2)
+- `--width`: Barrier width (default: 10.0)
+- `--steps`: Number of time steps (default: 5000)
+- `--animate`: Show animation of wavepacket evolution
+
+#### Numerical Method
+The simulation uses the **Crank-Nicolson algorithm**, a stable finite-difference scheme for time evolution of the Schrödinger equation.
+
+#### Project Components
+- `tunneling/solver.py`: Crank-Nicolson time-stepping solver
+- `tunneling/potential.py`: Square barrier potential definition
+- `tunneling/wavepacket.py`: Initial Gaussian wavepacket generation
+- `tunneling/params.py`: Simulation parameters (spatial/temporal grid, physical constants)
+- `tunneling/visualize.py`: Probability density visualization and animation
+
+#### Output
+The simulation calculates and displays:
+- **Transmission coefficient**: Probability of wavepacket tunneling through the barrier
+- **Reflection coefficient**: Probability of wavepacket reflecting from the barrier
+- **Probability density**: $|\psi(x,t)|^2$ at the final time
+- **Comparison**: Numerical vs. theoretical tunneling probabilities
+
+#### Physical Insights
+- Demonstrates quantum tunneling: particles can penetrate barriers even when $E_0 < V_0$
+- Exponential dependence of transmission on barrier width and height
+- Non-relativistic quantum mechanics in 1D
+
+---
+
+### 3. **QML - Quantum Machine Learning** (`QML/`)
 
 #### [Quantum Support Vector Regression](QML/qsvr.md)
 A comprehensive tutorial on converting classical Support Vector Regression (SVR) to Quantum Support Vector Regression (QSVR) using Qiskit.
@@ -67,6 +132,11 @@ A comprehensive tutorial on converting classical Support Vector Regression (SVR)
 - numpy
 - scipy
 - plotly
+
+### Quantum Tunneling 1D
+- numpy
+- scipy
+- matplotlib
 
 ### Quantum Machine Learning
 - Qiskit (and related packages)
@@ -89,14 +159,22 @@ A comprehensive tutorial on converting classical Support Vector Regression (SVR)
    python main.py
    ```
 
-3. **Learn Quantum Machine Learning**
+3. **Simulate Quantum Tunneling**
+   ```bash
+   cd quantum_tunneling_1d
+   pip install -r requirements.txt
+   python main.py --V0 1.5 --k0 1.2 --animate
+   ```
+
+4. **Learn Quantum Machine Learning**
    - Navigate to `QML/qsvr.md` and follow the tutorial step-by-step
 
 ## 📚 Educational Purpose
 
 This repository is designed as an educational resource for learning:
-- **Quantum Physics**: Hydrogen atom wavefunctions and electron orbital visualization
-- **Computational Methods**: Monte Carlo sampling and numerical visualization
+- **Quantum Physics**: Hydrogen atom wavefunctions, electron orbital visualization, and quantum tunneling phenomena
+- **Computational Methods**: Monte Carlo sampling, numerical visualization, and finite-difference schemes (Crank-Nicolson)
+- **Differential Equations**: Solving the time-dependent Schrödinger equation numerically
 - **Quantum Computing**: Introduction to quantum algorithms using Qiskit
 - **Machine Learning**: Classical and quantum approaches to regression problems
 
@@ -111,10 +189,18 @@ These constraints ensure physically valid quantum states of the hydrogen atom.
 
 ## 📝 Notes
 
+### Hydrogen Orbital Simulator
 - All orbital calculations use the Born interpretation of the wavefunction (probability density)
 - 3D visualizations show the spatial distribution of electron probability
 - The simulator supports both complex and real orbital representations
 - Results are reproducible using fixed random seeds
+
+### Quantum Tunneling 1D
+- The Crank-Nicolson solver is unconditionally stable for the Schrödinger equation
+- Transmission and reflection coefficients are computed from the final probability distribution
+- The theoretical tunneling approximation is valid for thick barriers and sub-barrier tunneling
+- Animation helps visualize the wavepacket splitting at the barrier interface
+- Numerical results converge to theoretical predictions with sufficient spatial and temporal resolution
 
 ---
 
