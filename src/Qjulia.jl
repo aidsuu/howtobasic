@@ -44,7 +44,7 @@ export TFIMParameters,
 """
     TFIMParameters
 
-Parameter container untuk model 1D transverse-field Ising:
+Parameter container for the 1D transverse-field Ising model:
 
 `H = -J Σ σᶻᵢσᶻᵢ₊₁ - h Σ σˣᵢ`
 """
@@ -61,31 +61,31 @@ const identity_2 = ComplexF64[1 0; 0 1]
 """
     sigma_x(site, N)
 
-Operator `σˣ` pada `site` untuk rantai spin panjang `N`.
+`σˣ` operator acting on `site` for a spin chain of length `N`.
 """
 sigma_x(site::Int, N::Int) = local_operator(pauli_x, site, N)
 
 """
     sigma_z(site, N)
 
-Operator `σᶻ` pada `site` untuk rantai spin panjang `N`.
+`σᶻ` operator acting on `site` for a spin chain of length `N`.
 """
 sigma_z(site::Int, N::Int) = local_operator(pauli_z, site, N)
 
 """
     sigma_zz(site, N)
 
-Operator dua-site `σᶻᵢ σᶻᵢ₊₁` pada pasangan `(site, site + 1)`.
+Nearest-neighbor two-site operator `σᶻᵢ σᶻᵢ₊₁` on `(site, site + 1)`.
 """
 function sigma_zz(site::Int, N::Int)
-    site < N || throw(ArgumentError("site harus <= N - 1 untuk operator ZZ nearest-neighbor"))
+    site < N || throw(ArgumentError("site must satisfy site <= N - 1 for a nearest-neighbor ZZ operator"))
     return two_site_operator(pauli_z, site, pauli_z, site + 1, N)
 end
 
 """
     tfim_hamiltonian(params)
 
-Bentuk Hamiltonian dense untuk TFIM 1D open boundary conditions.
+Dense Hamiltonian for the 1D TFIM with open boundary conditions.
 """
 function tfim_hamiltonian(params::TFIMParameters)
     validate_parameters(params)
@@ -108,18 +108,18 @@ end
 """
     tfim_sites(N)
 
-Bangun site indices ITensors untuk spin-1/2.
+Construct ITensors site indices for spin-1/2.
 """
 tfim_sites(N::Int) = siteinds("S=1/2", N)
 
 """
     tfim_mpo(params)
 
-Bangun Hamiltonian TFIM 1D dalam bentuk MPO ITensors.
+Construct the 1D TFIM Hamiltonian as an ITensors MPO.
 
-Catatan: operator ITensors `"Sz"` dan `"Sx"` untuk spin-1/2
-bernilai `σ/2`, sehingga koefisien Pauli dikonversi menjadi
-`σzσz = 4 Sz Sz` dan `σx = 2 Sx`.
+Note: the ITensors spin-1/2 operators `"Sz"` and `"Sx"` are
+equal to `σ/2`, so the Pauli-form coefficients become
+`σzσz = 4 Sz Sz` and `σx = 2 Sx`.
 """
 function tfim_mpo(params::TFIMParameters)
     validate_parameters(params)
@@ -141,8 +141,8 @@ end
 """
     mps_ground_state(params; nsweeps = 8, maxdim = [10, 20, 50, 100, 100, 200, 200, 400], cutoff = 1e-10, linkdims = 2)
 
-Hitung ground state TFIM dengan DMRG/MPS berbasis ITensors.
-Mengembalikan named tuple `(energy, state, hamiltonian, sites)`.
+Compute the TFIM ground state with ITensors DMRG/MPS.
+Returns the named tuple `(energy, state, hamiltonian, sites)`.
 """
 function mps_ground_state(
     params::TFIMParameters;
@@ -168,7 +168,7 @@ end
 """
     ground_state(params)
 
-Hitung energi dasar dan vektor ground state dari Hamiltonian TFIM.
+Compute the ground-state energy and ground-state vector of the TFIM Hamiltonian.
 """
 function ground_state(params::TFIMParameters)
     eigenpairs = eigen(tfim_hamiltonian(params))
@@ -181,18 +181,18 @@ end
 """
     normalize_state(state)
 
-Normalisasi state vector menjadi `|ψ⟩ / ||ψ||`.
+Normalize a state vector to `|ψ⟩ / ||ψ||`.
 """
 function normalize_state(state::AbstractVector)
     state_norm = norm(state)
-    iszero(state_norm) && throw(ArgumentError("state tidak boleh memiliki norm nol"))
+    iszero(state_norm) && throw(ArgumentError("state must not have zero norm"))
     return state / state_norm
 end
 
 """
     expectation_value(state, operator)
 
-Ekspektasi `⟨ψ|O|ψ⟩` untuk state ter-normalisasi.
+Expectation value `⟨ψ|O|ψ⟩` for a normalized state.
 """
 function expectation_value(state::AbstractVector, operator::AbstractMatrix)
     normalized_state = normalize_state(state)
@@ -202,7 +202,7 @@ end
 """
     expectation_value(operator, state)
 
-Metode kompatibilitas untuk urutan argumen lama.
+Compatibility method for the legacy argument order.
 """
 function expectation_value(operator::AbstractMatrix, state::AbstractVector)
     return expectation_value(state, operator)
@@ -211,7 +211,7 @@ end
 """
     energy_expectation(state, hamiltonian)
 
-Ekspektasi energi `⟨ψ|H|ψ⟩`.
+Energy expectation value `⟨ψ|H|ψ⟩`.
 """
 function energy_expectation(state::AbstractVector, hamiltonian::AbstractMatrix)
     return expectation_value(state, hamiltonian)
@@ -220,7 +220,7 @@ end
 """
     single_spin_state(θ, ϕ = 0)
 
-State lokal
+Local state
 `|φ(θ, ϕ)⟩ = cos(θ/2)|0⟩ + exp(iϕ) sin(θ/2)|1⟩`.
 """
 function single_spin_state(theta::Real, phi::Real = 0.0)
@@ -230,10 +230,10 @@ end
 """
     product_state_ansatz(N, θ)
 
-Ansatz product state homogen untuk `N` spin dari state lokal `|φ(θ)⟩`.
+Uniform product-state ansatz for `N` spins built from the local state `|φ(θ)⟩`.
 """
 function product_state_ansatz(N::Int, theta::Real)
-    N >= 1 || throw(ArgumentError("N harus >= 1"))
+    N >= 1 || throw(ArgumentError("N must be >= 1"))
 
     local_state = single_spin_state(theta)
     state = local_state
@@ -248,11 +248,11 @@ end
 """
     product_state_ansatz(thetas, phis = zeros(length(thetas)))
 
-Ansatz product state dengan parameter lokal per-site.
+Product-state ansatz with site-dependent local parameters.
 """
 function product_state_ansatz(thetas::AbstractVector, phis::AbstractVector = zeros(length(thetas)))
-    length(thetas) == length(phis) || throw(ArgumentError("thetas dan phis harus memiliki panjang yang sama"))
-    !isempty(thetas) || throw(ArgumentError("jumlah site harus >= 1"))
+    length(thetas) == length(phis) || throw(ArgumentError("thetas and phis must have the same length"))
+    !isempty(thetas) || throw(ArgumentError("the number of sites must be >= 1"))
 
     state = single_spin_state(thetas[1], phis[1])
     for site in 2:length(thetas)
@@ -265,7 +265,7 @@ end
 """
     zz_entangler(site, N, γ)
 
-Operator entangler nearest-neighbor
+Nearest-neighbor entangler
 `U_ZZ(γ) = exp(-im * γ * σᶻᵢσᶻᵢ₊₁)`.
 """
 function zz_entangler(site::Int, N::Int, gamma::Real)
@@ -277,7 +277,7 @@ end
 """
     apply_zz_entangler(state, site, N, γ)
 
-Terapkan entangler nearest-neighbor `ZZ` pada state.
+Apply the nearest-neighbor `ZZ` entangler to a state.
 """
 function apply_zz_entangler(state::AbstractVector, site::Int, N::Int, gamma::Real)
     return normalize_state(zz_entangler(site, N, gamma) * state)
@@ -286,9 +286,9 @@ end
 """
     entangled_product_state_ansatz(thetas, gammas; phis = zeros(length(thetas)))
 
-Ansatz terentang sederhana:
+Simple entangled ansatz:
 `|ψ(θs, γs)⟩ = [∏ᵢ U_ZZ(γᵢ)] |Φ(θs, ϕs)⟩`
-dengan `|Φ⟩` product state per-site.
+with `|Φ⟩` a site-dependent product state.
 """
 function entangled_product_state_ansatz(
     thetas::AbstractVector,
@@ -296,7 +296,7 @@ function entangled_product_state_ansatz(
     phis::AbstractVector = zeros(length(thetas)),
 )
     N = length(thetas)
-    length(gammas) == N - 1 || throw(ArgumentError("gammas harus memiliki panjang N - 1"))
+    length(gammas) == N - 1 || throw(ArgumentError("gammas must have length N - 1"))
 
     state = product_state_ansatz(thetas, phis)
     for site in 1:(N - 1)
@@ -309,7 +309,7 @@ end
 """
     variational_energy(θ, H, N)
 
-Objective function energi untuk product-state ansatz dengan parameter tunggal `θ`.
+Energy objective for the single-parameter product-state ansatz.
 """
 function variational_energy(theta::Real, hamiltonian::AbstractMatrix, N::Int)
     trial_state = product_state_ansatz(N, theta)
@@ -319,7 +319,7 @@ end
 """
     variational_energy(thetas, hamiltonian; phis = zeros(length(thetas)))
 
-Energi variational untuk product-state per-site.
+Variational energy for the site-dependent product-state ansatz.
 """
 function variational_energy(
     thetas::AbstractVector,
@@ -333,7 +333,7 @@ end
 """
     entangled_variational_energy(thetas, gammas, hamiltonian; phis = zeros(length(thetas)))
 
-Energi variational untuk ansatz product-state terentang oleh entangler `ZZ`.
+Variational energy for the `ZZ`-entangled product-state ansatz.
 """
 function entangled_variational_energy(
     thetas::AbstractVector,
@@ -348,8 +348,8 @@ end
 """
     optimize_product_state_theta(hamiltonian, N; lower = -2π, upper = 2π)
 
-Optimisasi parameter `θ` untuk ansatz product state memakai `Optim.jl`.
-Mengembalikan `(theta_opt, energy_opt, result)`.
+Optimize the single product-state parameter `θ` with `Optim.jl`.
+Returns `(theta_opt, energy_opt, result)`.
 """
 function optimize_product_state_theta(
     hamiltonian::AbstractMatrix,
@@ -367,8 +367,8 @@ end
 """
     optimize_product_state(hamiltonian, N; initial_thetas, initial_phis)
 
-Optimisasi multi-parameter untuk product-state per-site.
-Mengembalikan `(thetas_opt, phis_opt, energy_opt, result)`.
+Multi-parameter optimization for the site-dependent product-state ansatz.
+Returns `(thetas_opt, phis_opt, energy_opt, result)`.
 """
 function optimize_product_state(
     hamiltonian::AbstractMatrix,
@@ -394,8 +394,8 @@ end
 """
     optimize_entangled_product_state(hamiltonian, N; initial_thetas, initial_phis, initial_gammas)
 
-Optimisasi multi-parameter untuk ansatz terentang berbasis entangler `ZZ`.
-Mengembalikan `(thetas_opt, phis_opt, gammas_opt, energy_opt, result)`.
+Multi-parameter optimization for the `ZZ`-entangled ansatz.
+Returns `(thetas_opt, phis_opt, gammas_opt, energy_opt, result)`.
 """
 function optimize_entangled_product_state(
     hamiltonian::AbstractMatrix,
@@ -406,7 +406,7 @@ function optimize_entangled_product_state(
     iterations::Int = 4_000,
 )
     validate_site_parameter_lengths(N, initial_thetas, initial_phis)
-    length(initial_gammas) == N - 1 || throw(ArgumentError("initial_gammas harus memiliki panjang N - 1"))
+    length(initial_gammas) == N - 1 || throw(ArgumentError("initial_gammas must have length N - 1"))
 
     product_thetas, product_phis, product_energy, _ = optimize_product_state(
         hamiltonian,
@@ -539,7 +539,7 @@ end
 """
     correlation_zz(state, r)
 
-Korelasi dua titik rata-rata translasi sederhana
+Two-point `zz` correlation with a simple translation average,
 `(1/(N-r)) Σᵢ ⟨σᶻᵢ σᶻᵢ₊ᵣ⟩`.
 """
 function correlation_zz(state::AbstractVector, r::Int)
@@ -549,7 +549,7 @@ end
 """
     correlation_xx(state, r)
 
-Korelasi dua titik rata-rata translasi sederhana
+Two-point `xx` correlation with a simple translation average,
 `(1/(N-r)) Σᵢ ⟨σˣᵢ σˣᵢ₊ᵣ⟩`.
 """
 function correlation_xx(state::AbstractVector, r::Int)
@@ -559,7 +559,7 @@ end
 """
     connected_correlation_zz(state, r)
 
-Korelasi terkoneksi
+Connected `zz` correlation,
 `(1/(N-r)) Σᵢ [⟨σᶻᵢ σᶻᵢ₊ᵣ⟩ - ⟨σᶻᵢ⟩⟨σᶻᵢ₊ᵣ⟩]`.
 """
 function connected_correlation_zz(state::AbstractVector, r::Int)
@@ -582,7 +582,7 @@ end
 """
     correlation_zz(psi, r)
 
-Korelasi dua titik `σᶻσᶻ` rata-rata translasi untuk MPS.
+Translation-averaged `σᶻσᶻ` two-point correlation for an MPS.
 """
 function correlation_zz(psi::MPS, r::Int)
     return mps_pauli_correlation_average(psi, "Sz", "Sz", 4.0, r)
@@ -591,7 +591,7 @@ end
 """
     correlation_xx(psi, r)
 
-Korelasi dua titik `σˣσˣ` rata-rata translasi untuk MPS.
+Translation-averaged `σˣσˣ` two-point correlation for an MPS.
 """
 function correlation_xx(psi::MPS, r::Int)
     return mps_pauli_correlation_average(psi, "Sx", "Sx", 4.0, r)
@@ -600,7 +600,7 @@ end
 """
     connected_correlation_zz(psi, r)
 
-Korelasi terkoneksi `σᶻσᶻ` rata-rata translasi untuk MPS.
+Translation-averaged connected `σᶻσᶻ` correlation for an MPS.
 """
 function connected_correlation_zz(psi::MPS, r::Int)
     N = length(psi)
@@ -622,7 +622,7 @@ end
 """
     correlation_profile_zz(state, max_r)
 
-Profil korelasi `zz` untuk `r = 0:max_r`.
+`zz` correlation profile for `r = 0:max_r`.
 """
 function correlation_profile_zz(state, max_r::Int)
     return [correlation_zz(state, r) for r in correlation_distances(state, max_r)]
@@ -631,7 +631,7 @@ end
 """
     correlation_profile_xx(state, max_r)
 
-Profil korelasi `xx` untuk `r = 0:max_r`.
+`xx` correlation profile for `r = 0:max_r`.
 """
 function correlation_profile_xx(state, max_r::Int)
     return [correlation_xx(state, r) for r in correlation_distances(state, max_r)]
@@ -640,7 +640,7 @@ end
 """
     connected_correlation_profile_zz(state, max_r)
 
-Profil korelasi terkoneksi `zz` untuk `r = 0:max_r`.
+Connected `zz` correlation profile for `r = 0:max_r`.
 """
 function connected_correlation_profile_zz(state, max_r::Int)
     return [connected_correlation_zz(state, r) for r in correlation_distances(state, max_r)]
@@ -649,9 +649,9 @@ end
 """
     sweep_h_over_J(method, Ns, h_over_J_values; J = 1.0, product_iterations = 1500, mps_kwargs...)
 
-Jalankan sweep observables TFIM pada beberapa rasio `h/J` dan ukuran sistem `N`.
-Method dapat berupa `:exact`, `:product`, atau `:mps`.
-Mengembalikan vektor `NamedTuple`.
+Run a TFIM observable sweep over several `h/J` values and system sizes `N`.
+`method` must be one of `:exact`, `:product`, or `:mps`.
+Returns a vector of `NamedTuple`s.
 """
 function sweep_h_over_J(
     method::Symbol,
@@ -687,8 +687,8 @@ end
 """
     add_finite_difference_derivative(rows; field = :e0, xfield = :h_over_J, groupfields = (:method, :N), output_name = nothing)
 
-Tambahkan estimator turunan numerik berbasis finite difference ke setiap row sweep.
-Endpoint memakai one-sided difference, titik interior memakai central difference.
+Add a finite-difference derivative estimate to each sweep row.
+Endpoints use one-sided differences and interior points use central differences.
 """
 function add_finite_difference_derivative(
     rows::AbstractVector;
@@ -720,10 +720,10 @@ end
 """
     save_sweep_results_csv(path, rows)
 
-Simpan hasil sweep ke file CSV sederhana.
+Write sweep results to a simple CSV file.
 """
 function save_sweep_results_csv(path::AbstractString, rows::AbstractVector)
-    isempty(rows) && throw(ArgumentError("rows tidak boleh kosong"))
+    isempty(rows) && throw(ArgumentError("rows must not be empty"))
 
     directory = dirname(path)
     isempty(directory) || mkpath(directory)
@@ -744,7 +744,7 @@ end
 """
     magnetization_z(state, N)
 
-Rata-rata magnetisasi `Mz = (1/N) Σ ⟨σᶻᵢ⟩`.
+Average magnetization `Mz = (1/N) Σ ⟨σᶻᵢ⟩`.
 """
 function magnetization_z(state::AbstractVector, N::Int)
     return sum(expectation_value(state, sigma_z(site, N)) for site in 1:N) / N
@@ -753,7 +753,7 @@ end
 """
     magnetization_z(psi::MPS)
 
-Rata-rata magnetisasi `Mz` untuk MPS, dalam konvensi operator Pauli.
+Average `Mz` for an MPS in the Pauli-operator convention.
 """
 function magnetization_z(psi::MPS)
     values = expect(psi, "Sz")
@@ -763,7 +763,7 @@ end
 """
     magnetization_x(state, N)
 
-Rata-rata magnetisasi `Mx = (1/N) Σ ⟨σˣᵢ⟩`.
+Average magnetization `Mx = (1/N) Σ ⟨σˣᵢ⟩`.
 """
 function magnetization_x(state::AbstractVector, N::Int)
     return sum(expectation_value(state, sigma_x(site, N)) for site in 1:N) / N
@@ -772,7 +772,7 @@ end
 """
     magnetization_x(psi::MPS)
 
-Rata-rata magnetisasi `Mx` untuk MPS, dalam konvensi operator Pauli.
+Average `Mx` for an MPS in the Pauli-operator convention.
 """
 function magnetization_x(psi::MPS)
     values = expect(psi, "Sx")
@@ -780,13 +780,13 @@ function magnetization_x(psi::MPS)
 end
 
 function validate_parameters(params::TFIMParameters)
-    params.N >= 1 || throw(ArgumentError("N harus >= 1"))
+    params.N >= 1 || throw(ArgumentError("N must be >= 1"))
     return nothing
 end
 
 function validate_site_parameter_lengths(N::Int, thetas::AbstractVector, phis::AbstractVector)
-    length(thetas) == N || throw(ArgumentError("thetas harus memiliki panjang N"))
-    length(phis) == N || throw(ArgumentError("phis harus memiliki panjang N"))
+    length(thetas) == N || throw(ArgumentError("thetas must have length N"))
+    length(phis) == N || throw(ArgumentError("phis must have length N"))
     return nothing
 end
 
@@ -801,19 +801,19 @@ end
 function infer_num_sites(state::AbstractVector)
     state_length = length(state)
     N = round(Int, log2(state_length))
-    2^N == state_length || throw(ArgumentError("panjang state harus berupa pangkat dua"))
+    2^N == state_length || throw(ArgumentError("state length must be a power of two"))
     return N
 end
 
 function validate_correlation_distance(r::Int, N::Int)
-    0 <= r < N || throw(ArgumentError("jarak korelasi r harus memenuhi 0 <= r < N"))
+    0 <= r < N || throw(ArgumentError("correlation distance r must satisfy 0 <= r < N"))
     return nothing
 end
 
 function correlation_distances(state, max_r::Int)
     N = num_sites_for_correlations(state)
     upper = min(max_r, N - 1)
-    upper >= 0 || throw(ArgumentError("max_r harus >= 0"))
+    upper >= 0 || throw(ArgumentError("max_r must be >= 0"))
     return 0:upper
 end
 
@@ -863,7 +863,7 @@ num_sites_for_correlations(psi::MPS) = length(psi)
 
 function finite_difference_estimate(group::AbstractVector, field::Symbol, xfield::Symbol)
     n = length(group)
-    n >= 2 || throw(ArgumentError("setiap grup perlu minimal dua titik untuk turunan numerik"))
+    n >= 2 || throw(ArgumentError("each group needs at least two points for a numerical derivative"))
 
     derivatives = zeros(Float64, n)
     xs = [Float64(getproperty(row, xfield)) for row in group]
@@ -911,13 +911,13 @@ function solve_tfim_point(
         return (energy = result.energy, mz = magnetization_z(result.state), mx = magnetization_x(result.state))
     end
 
-    throw(ArgumentError("method harus salah satu dari :exact, :product, atau :mps"))
+    throw(ArgumentError("method must be one of :exact, :product, or :mps"))
 end
 
 csv_escape(value) = value isa AbstractString ? value : string(value)
 
 function local_operator(single_site_operator::AbstractMatrix, site::Int, N::Int)
-    1 <= site <= N || throw(ArgumentError("site harus berada di antara 1 dan N"))
+    1 <= site <= N || throw(ArgumentError("site must be between 1 and N"))
 
     operator_factors = Matrix{ComplexF64}[]
     sizehint!(operator_factors, N)
@@ -936,9 +936,9 @@ function two_site_operator(
     second_site::Int,
     N::Int,
 )
-    1 <= first_site <= N || throw(ArgumentError("first_site harus berada di antara 1 dan N"))
-    1 <= second_site <= N || throw(ArgumentError("second_site harus berada di antara 1 dan N"))
-    first_site != second_site || throw(ArgumentError("sites harus berbeda"))
+    1 <= first_site <= N || throw(ArgumentError("first_site must be between 1 and N"))
+    1 <= second_site <= N || throw(ArgumentError("second_site must be between 1 and N"))
+    first_site != second_site || throw(ArgumentError("sites must be distinct"))
 
     operator_factors = Matrix{ComplexF64}[]
     sizehint!(operator_factors, N)

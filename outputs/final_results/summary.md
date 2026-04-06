@@ -1,32 +1,32 @@
 # Final TFIM 1D Results
 
-## Benchmark utama
+## Main Benchmark
 
-- Exact diagonalization dipakai untuk `N = 4, 6, 10` sebagai baseline referensi.
-- Product-state exact-vector dipakai hanya untuk `N` kecil sebagai baseline mean-field sederhana.
-- MPS/DMRG dipakai untuk `N = 10, 20, 40` agar skala sistem bisa diperbesar.
+- Exact diagonalization is used for `N = 4, 6, 10` as the reference baseline.
+- The exact-vector product-state ansatz is used only for small `N` as a simple mean-field-like baseline.
+- MPS/DMRG is used for `N = 10, 20, 40` so that larger systems can be treated.
 
-## Kapan product-state gagal
+## Where The Product State Fails
 
-- Pada overlap `N = 10`, gap energi terbesar product-state terhadap exact muncul di sekitar `h/J = 1.8` dengan selisih `1.24188`.
-- Ini konsisten dengan ekspektasi bahwa product-state paling lemah saat korelasi dan entanglement meningkat di sekitar crossover kritis.
+- On the overlap system `N = 10`, the largest product-state energy gap relative to exact diagonalization appears near `h/J = 1.8`, with a difference of `1.24188`.
+- This is consistent with the expected limitation of a product state when correlations and entanglement become stronger near the crossover region.
 
-## Kapan MPS cocok dengan ED
+## Where MPS Matches Exact Diagonalization
 
-- Pada ukuran overlap `N = 10`, MPS mereproduksi energi exact dengan deviasi maksimum `8.56469e-5` di seluruh sweep utama.
-- Untuk `N = 4` dan `N = 6`, benchmark sebelumnya juga menunjukkan MPS praktis menumpuk di atas exact sampai toleransi numerik.
+- On the overlap system `N = 10`, the MPS energy reproduces the exact result with a maximum deviation of `8.58675e-5` across the main sweep.
+- For `N = 4` and `N = 6`, earlier benchmarks also showed that the MPS result is effectively identical to exact diagonalization within numerical tolerance.
 
-## Pola near-critical
+## Near-Critical Pattern
 
-- Pada sweep rapat, magnitudo turunan `dMx/d(h/J)` untuk `N = 40` mencapai puncak dekat `h/J = 0.95`, menandai crossover tercepat.
-- `Mz` turun dan `Mx` naik saat medan transversal diperbesar, sesuai transisi dari dominasi interaksi Ising ke polarisasi arah-x.
+- In the dense sweep, the magnitude of `dMx/d(h/J)` for `N = 40` reaches its maximum near `h/J = 0.95`, which marks the sharpest crossover.
+- `Mz` decreases and `Mx` increases as the transverse field grows, consistent with the shift from Ising-dominated order toward x-polarization.
 
-## Korelasi
+## Correlations
 
-- Profil korelasi `zz`, `xx`, dan connected `zz` tersedia untuk `h/J = 0.6, 1.0, 1.4` dan `N = 20, 40`.
-- Dekat `h/J = 1`, peluruhan korelasi menjadi lebih lambat dibanding jauh dari crossover, terutama pada ukuran sistem lebih besar.
+- The `zz`, `xx`, and connected `zz` correlation profiles are stored for `h/J = 0.6, 1.0, 1.4` and `N = 20, 40`.
+- Near `h/J = 1`, the correlation decay becomes slower than it is far from the crossover, especially for the larger systems.
 
-## Entanglement entropy
+## Entanglement Entropy
 
-- Entropy bipartisi tengah MPS ditambahkan sebagai indikator tambahan entanglement.
-- Pada `N = 40`, entropy tengah maksimum dalam sweep utama muncul dekat `h/J = 1.0` dengan nilai `0.505246`.
+- The MPS mid-chain bipartite entropy is included as an additional entanglement indicator.
+- For `N = 40`, the largest mid-chain entropy in the main sweep appears near `h/J = 1.0`, with value `0.505242`.
