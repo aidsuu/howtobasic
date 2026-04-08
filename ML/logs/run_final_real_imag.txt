@@ -1,0 +1,17 @@
+Final official run summary: real_imag
+Date: 2026-04-07
+
+Training command:
+python src/train_baseline.py --epochs 50 --batch-size 8 --lr 1e-3 --input-mode real_imag --num-workers 8 --torch-num-threads 16 --device cpu --early-stopping-patience 8 --min-delta 1e-4
+
+Early stopping:
+- triggered: no
+
+Training result:
+- best_epoch: 50
+- best_val_loss: 0.152178
+
+Evaluation result:
+- test_mse: 0.184736
+- test_mae: 0.203690
+- test_rmse: 0.429810

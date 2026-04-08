@@ -1,0 +1,15 @@
+Torch CUDA probe log
+Date: 2026-04-07
+
+Attempt a: torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 (cu124)
+Result: install failed because torchvision==0.20.1 was not available from the cu124 index for this environment.
+
+Attempt b: torch==2.4.1 torchvision==0.19.1 torchaudio==2.4.1 (cu124)
+Result: install failed because torch==2.4.1 was not available from the cu124 index for this environment.
+
+Old environment: .venv -> torch 2.11.0+cu130, cuda available False, driver reported too old.
+New environment: .venv-cu -> Python 3.13.5.
+Attempt c: torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 (cu121)
+Result: install failed because torch==2.3.1 was not available from the cu121 index for this environment.
+Conclusion: requested CUDA candidate versions could not be installed in .venv-cu, so no successful CUDA probe was possible there.
+

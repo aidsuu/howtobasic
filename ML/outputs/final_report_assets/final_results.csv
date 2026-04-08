@@ -1,0 +1,2 @@
+input_mode,best_epoch,best_val_loss,test_mse,test_mae,test_rmse,batch_size,lr,device,torch_num_threads,num_workers
+real_imag,50,0.152178,0.184736,0.203690,0.429810,8,1e-3,cpu,16,8

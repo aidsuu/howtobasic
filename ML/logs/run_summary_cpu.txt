@@ -1,0 +1,31 @@
+CPU run summary
+Date: 2026-04-07
+
+Environment used:
+- .venv
+
+Commands executed:
+1. python src/train_baseline.py --epochs 50 --batch-size 16 --lr 1e-3 --input-mode magnitude --num-workers 8 --torch-num-threads 16 --device cpu --early-stopping-patience 8 --min-delta 1e-4
+2. python src/evaluate.py --input-mode magnitude --device cpu
+3. python src/plot_history.py
+
+Early stopping:
+- enabled: yes
+- patience: 8
+- min_delta: 1e-4
+- triggered: no
+
+Training result:
+- Best epoch: 48
+- Best validation loss: 0.457512
+- Best model saved to: models/best_model.pt
+- History saved to: outputs/history.csv
+- Validation examples saved to: outputs/val_examples/
+
+Evaluation result:
+- test_mse: 0.488006
+- test_mae: 0.392868
+- test_rmse: 0.698574
+
+Plot result:
+- History plot saved to: outputs/history_plot.png

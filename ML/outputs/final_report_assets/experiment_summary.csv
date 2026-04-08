@@ -1,0 +1,4 @@
+input_mode,best_epoch,best_val_loss,test_mse,test_mae,test_rmse,epochs_run,batch_size,lr,device
+magnitude,48,0.457512,0.488006,0.392868,0.698574,50,16,1e-3,cpu
+magnitude_minus_freespace,50,0.394874,0.494521,0.410393,0.703222,50,16,1e-3,cpu
+real_imag,50,0.152178,0.184736,0.203690,0.429810,50,8,1e-3,cpu
